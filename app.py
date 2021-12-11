@@ -4,7 +4,7 @@ import time
 import urllib.request
 import csv
 #import matplotlib.pyplot as plt
-#import cv2
+import cv2
 import numpy as np
 
 app = Flask('MyHerokuApp')
