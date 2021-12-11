@@ -70,18 +70,26 @@ def nday_moving_avg(n,mylist):
     ret.append(first_avg)
     return ret
 
-def plotState(state,ax,n,nma):
-    cases = getCases(state)
+def plotState(state_code,state_name,ax,n,nma):
+    cases = getCases(state_code)
     n_day = nday_moving_avg(nma,cases)
     retval = plot(n_day,n,ax)
-    ax.set_title(state)
-    return str(retval)
+    ax.set_title(state_name)
 
-def main_covid(n,nma):
+def main_covid(state1,state2,n,nma):
     r = urllib.request.urlretrieve(STATE_WISE_DAILY,'temp.csv')
+    
+    filename ="india-states.csv"
+    mydict = []
+    with open(filename, 'r') as data:
+        reader = csv.reader(data)
+        mydict = {rows[0]:rows[1] for rows in reader}
+    state_name_1 = mydict[state1]
+    state_name_2 = mydict[state2]
+    
     fig, ax = plt.subplots(1,2)
-    KA = plotState("KA",ax[0],n,nma)
-    BR = plotState("BR",ax[1],n,nma)
+    plotState(state1,state_name_1,ax[0],n,nma)
+    plotState(state2,state_name_2,ax[1],n,nma)
 
 
     # redraw the canvas
@@ -114,27 +122,10 @@ def my_form():
 def my_form_post():
     LAST_N_DAYS = int(request.form['n-day'])
     N_DAY_AVG = int(request.form['n-day-ma'])
-    return render_template("index.html", value=main_covid(LAST_N_DAYS,N_DAY_AVG))
+    state1 = request.form['state1']
+    state2 = request.form['state2']
+    print(state1,state2)
+    return render_template("index.html", value=main_covid(state1,state2,LAST_N_DAYS,N_DAY_AVG))
 
-# Route that will get the config value based on a provided key, so in
-# this way we can interogate our configuration.
-'''
-@app.route('/<config_key>')
-def key(config_key=None):
-    config_value=None
 
-    if (config_key):
-        # Advice: You should make a convention to define config key upper cased.
-        # otherwise you will have consistency issues when reading your keys.
-        # If you know they are always upper cased, you just need to uppercase
-        # what the config_key argument.
-        config_key = config_key.upper()
-        config_value = os.environ.get(config_key, None)
-
-    if key and config_value:
-        app.logger.info("Value of {} is {}.".format(config_key, config_value))
-
-    # We will just display our mailgun secret key, nothing more.
-    return render_template("keys.html", key=config_key, value=config_value)
-'''
 app.run(host='0.0.0.0', port=port, debug=True)
