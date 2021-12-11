@@ -32,6 +32,72 @@ def n_fact(n):
         pro = (i+1)*pro
     return pro
 
+def getCases(state_code):
+    with open('temp.csv','r') as csvfile:
+        date = []
+        cases = []
+        csvreader = csv.reader(csvfile)
+        fields = next(csvreader)
+        state = -1
+        state = fields.index(state_code)
+        
+        for row in csvreader:
+            if('Confirmed' in row):
+                date.append(str(row[0]))
+                cases.append(int(row[state]))
+        
+        return cases
+
+def plot(y,n,ax):
+    x = list(range(len(y[-n:])))
+    x.reverse()
+    x = [i*-1 for i in x]
+    ax.plot(x,y[-n:])
+
+def nday_moving_avg(n,mylist):
+    ret = []
+    count = 0
+    first_avg = 0
+    list_len = len(mylist)
+    for i in range(n):
+        first_avg = first_avg + mylist[i]
+    first_avg = first_avg/n
+    for i in range(len(mylist)):
+        if(count < n):
+            count = count + 1
+        else:
+            #print(first_avg)
+            ret.append(first_avg)
+            first_avg = (first_avg*n - mylist[i-n]+mylist[i])/n
+    ret.append(first_avg)
+    return ret
+
+def plotState(state,ax):
+    cases = getCases(state)
+    n_day = nday_moving_avg(N_DAY_AVG,cases)
+    plot(n_day,LAST_N_DAYS,ax)
+    ax.set_title(state)
+    return str(n_day)
+
+def main_covid():
+    r = urllib.request.urlretrieve(STATE_WISE_DAILY,'temp.csv')
+    fig, ax = plt.subplots(1,2)
+    KA = plotState("KA",ax[0])
+    BR = plotState("BR",ax[1])
+
+
+    # redraw the canvas
+    fig.canvas.draw()
+
+    # convert canvas to image
+    img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+    img  = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+
+    # img is rgb, convert to opencv's default bgr
+    img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
+    
+    return KA+BR
+
 # This is needed for Heroku configuration, as in Heroku our
 # app will probably not run on port 5000, as Heroku will automatically
 # assign a port for our application
