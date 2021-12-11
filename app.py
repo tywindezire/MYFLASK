@@ -7,6 +7,105 @@ app = Flask('MyHerokuApp')
 # Read the mailgun secret key from environment variables
 mailgun_secret_key_value = os.environ.get('MAILGUN_SECRET_KEY', None)
 
+import urllib.request
+import csv
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+
+BASE_URL = "https://data.incovid19.org/"
+CASE_TIME_SERIES = BASE_URL+"csv/latest/case_time_series.csv"
+STATES = BASE_URL+"csv/latest/states.csv"
+DISTRICTS	= BASE_URL+"csv/latest/districts.csv"
+SOURCES_LIST	= BASE_URL+"csv/latest/sources_list.csv"
+COWIN_VACCINE_DATA_STATEWISE	= BASE_URL+"csv/latest/cowin_vaccine_data_statewise.csv"
+COWIN_VACCINE_DATA_DISTRICTWISE	= BASE_URL+"csv/latest/cowin_vaccine_data_districtwise.csv"
+STATE_WISE_DAILY	= BASE_URL+"csv/latest/state_wise_daily.csv"
+STATE_WISE	= BASE_URL+"csv/latest/state_wise.csv"
+DISTRICT_WISE	= BASE_URL+"csv/latest/district_wise.csv"
+
+#f = urllib2.urlopen(STATE_WISE_DAILY)
+#cr = csv.reader(f)
+r = urllib.request.urlretrieve(STATE_WISE_DAILY,'temp.csv')
+
+def getCases(state_code):
+    with open('temp.csv','r') as csvfile:
+        date = []
+        cases = []
+        csvreader = csv.reader(csvfile)
+        fields = next(csvreader)
+        state = -1
+        state = fields.index(state_code)
+        
+        for row in csvreader:
+            if('Confirmed' in row):
+                date.append(str(row[0]))
+                cases.append(int(row[state]))
+        
+        return cases
+
+#print(date)
+#print(cases)
+
+#we truncate at the very end so as to maintain the originality of data
+#plot y for last n days
+def plot(y,n,ax):
+    x = list(range(len(y[-n:])))
+    x.reverse()
+    x = [i*-1 for i in x]
+    ax.plot(x,y[-n:])
+#plot()
+
+def nday_moving_avg(n,mylist):
+    ret = []
+    count = 0
+    first_avg = 0
+    list_len = len(mylist)
+    for i in range(n):
+        first_avg = first_avg + mylist[i]
+    first_avg = first_avg/n
+    for i in range(len(mylist)):
+        if(count < n):
+            count = count + 1
+        else:
+            #print(first_avg)
+            ret.append(first_avg)
+            first_avg = (first_avg*n - mylist[i-n]+mylist[i])/n
+    ret.append(first_avg)
+    return ret
+
+# LAST_N_DAYS = int(input("Last N days of data, N is: "))
+# N_DAY_AVG = int(input("N - Day moving average N is: "))
+
+LAST_N_DAYS = 60
+N_DAY_AVG = 20
+def plotState(state,ax):
+    cases = getCases(state)
+    n_day = nday_moving_avg(N_DAY_AVG,cases)
+    plot(n_day,LAST_N_DAYS,ax)
+    ax.set_title(state)
+    
+
+
+fig, ax = plt.subplots(1,2)
+plotState("KA",ax[0])
+plotState("BR",ax[1])
+#plt.show()
+
+# redraw the canvas
+fig.canvas.draw()
+
+# convert canvas to image
+img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+img  = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+
+# img is rgb, convert to opencv's default bgr
+img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
+
+# display image with opencv or any operation you like
+#cv2.imshow("plot",img)
+#cv2.waitKey(0)
+
 def n_fact(n):
     pro = 1
     for i in range(n):
