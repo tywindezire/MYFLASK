@@ -76,7 +76,7 @@ def plotState(state_code,state_name,ax,n,nma):
     retval = plot(n_day,n,ax)
     ax.set_title(state_name)
 
-def main_covid(state1,state2,n,nma):
+def main_covid(state_code_list,n,nma):
     r = urllib.request.urlretrieve(STATE_WISE_DAILY,'temp.csv')
     
     filename ="india-states.csv"
@@ -84,12 +84,38 @@ def main_covid(state1,state2,n,nma):
     with open(filename, 'r') as data:
         reader = csv.reader(data)
         mydict = {rows[0]:rows[1] for rows in reader}
-    state_name_1 = mydict[state1]
-    state_name_2 = mydict[state2]
+    all_states = 0
+    state_names = []
+    state_codes = state_code_list
+
+    for codes in state_codes:
+        state_names.append(mydict[codes])
+
+    dimension = len(state_names)
+    MAX_COL = 2
+    row_plot = 1
+    if dimension < 3:
+        col_plot = dimension
+        fig, ax = plt.subplots(row_plot,col_plot,figsize=(15,5))
+    else:
+        col_plot = MAX_COL
+        row_plot = int(dimension/MAX_COL)+1
+        fig, ax = plt.subplots(row_plot,col_plot,figsize=(10,50))
+        plt.subplots_adjust(left=0.1,
+                    bottom=0.1, 
+                    right=0.95, 
+                    top=0.99,
+                    wspace=0.1, 
+                    hspace=0.4)
     
-    fig, ax = plt.subplots(1,2)
-    plotState(state1,state_name_1,ax[0],n,nma)
-    plotState(state2,state_name_2,ax[1],n,nma)
+    #fig, ax = plt.subplots(row_plot,col_plot,figsize=(10,50))
+    
+    for x in range(dimension):
+        plot_coord = 0
+        if(dimension < 3):
+            plotState(state_codes[x],state_names[x],ax[x],n,nma)
+        else:
+            plotState(state_codes[x],state_names[x],ax[int(x/MAX_COL),x%MAX_COL],n,nma)
 
 
     # redraw the canvas
@@ -124,8 +150,19 @@ def my_form_post():
     N_DAY_AVG = int(request.form['n-day-ma'])
     state1 = request.form['state1']
     state2 = request.form['state2']
-    print(state1,state2)
-    return render_template("index.html", value=main_covid(state1,state2,LAST_N_DAYS,N_DAY_AVG))
+    all_switch = "off"
+    try:
+        all_switch = request.form['mycheckbox']
+    except:
+        pass
+    #print("------------------->"+(all_switch))
+    state_code_list= []
+    if(all_switch == "on"):
+            state_code_list = ["AP","AR","AS","BR","CT","GA","GJ","HR","HP","JK","JH","KA","KL","MP","MH","MN","ML","MZ","NL","OR","PB","RJ","SK","TN","TG","TR","UT","UP","WB","AN","CH","DN","DL","LD","PY"]
+            #state_code_list = ["AP","AR","AS","BR","CT","GA","GJ","HR","HP","JK","JH","KA","KL","MP","MH","MN","ML","MZ","NL","OR","PB","RJ","SK","TN","TG","TR","UT","UP","WB","AN","CH","DN","DL","LD","PY"]
+    else:
+            state_code_list = [state1,state2]
+    return render_template("index.html", value=main_covid(state_code_list,LAST_N_DAYS,N_DAY_AVG))
 
 
 app.run(host='0.0.0.0', port=port, debug=True)
