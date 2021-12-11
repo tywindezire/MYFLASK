@@ -1,2 +1,6 @@
 flask>=0.12.3
 Jinja2>=2.8.1
+numpy==1.19.3
+matlab==0.1
+matplotlib==3.3.4
+numpy==1.19.3
