@@ -112,7 +112,7 @@
         <form method="POST" class="uk-align-center	">
             <p>
                 <div class="uk-text-bolder centre">Last N Days</div>
-                <input type="text" name="n-day" class="uk-input centre " placeholder="Enter a number " />
+                <input type="text" name="n-day" class="uk-input centre " placeholder=" Enter a number " />
             </p>
             <p>
                 <div class="uk-text-bolder centre">N-Day Moving Average</div>
@@ -121,7 +121,7 @@
 
             <p>
                 <label for="state1" class="uk-text-bolder centre state1">Choose First State</label>
-                <select name="state1" class="uk-select state1" id="form-horizontal-select " >
+                <select name="state1" class="uk-select state1" id="form-horizontal-select ">
                     <option value="code" class="centre">State Name</option>
                     <option value="AP">Andhra Pradesh</option>
                     <option value="AR">Arunachal Pradesh</option>
@@ -163,7 +163,7 @@
             </p>
 
             <label for="state2" class="uk-text-bolder centre state2">Choose Second State</label>
-            <select name="state2"  class="uk-select state2" id="form-horizontal-select">
+            <select name="state2" class="uk-select state2" id="form-horizontal-select">
                 <option value="code" class="centre">State Name</option>
                 <option value="AP">Andhra Pradesh</option>
                 <option value="AR">Arunachal Pradesh</option>
@@ -202,17 +202,25 @@
                 <option value="LD">Lakshadweep</option>
                 <option value="PY">Puducherry</option>
             </select>
-    
             <p><div class="uk-text-bolder left">Toggle All States Visibility:</div></p>
             <label class="switch">
                 <input type="checkbox" name="mycheckbox" id="togBtn">
                 <span class="slider" id="togBtn"></span>
             </label>
+            <p><div class="uk-text-bolder left all_states">Graphs: All States</div></p>
+            <p><div class="uk-text-bolder left two_states">Graphs: Two States</div></p>
 
             <p> <input type="submit" value="Submit" class="uk-button uk-button-primary uk-align-center" /></p>
         </form>
     </div>
     <script>
+            
+        $(document).ready(function() {
+        $(".all_states").hide();
+        $(".two_states").hide();
+        document.getElementById("togBtn").checked = false;
+    });
+
         $("#togBtn").change(function() {
         
          $(".state1").toggle();
@@ -224,6 +232,14 @@
                 if($(".state2").is(':visible')) {
                     $(".state2").toggle();
             }
+
+                if($(".all_states").is(':visible') == false) {
+                            $(".all_states").toggle();
+            }
+            if($(".two_states").is(':visible')) {
+                            $(".two_states").toggle();
+            }
+
         }
         else {
             if($(".state1").is(':visible') == false) {
@@ -231,6 +247,12 @@
             }
                 if($(".state2").is(':visible') == false) {
                     $(".state2").toggle();
+            }
+                if($(".all_states").is(':visible') ) {
+                            $(".all_states").toggle();
+            }
+             if($(".two_states").is(':visible')==false ) {
+                            $(".two_states").toggle();
             }
         }
         });
