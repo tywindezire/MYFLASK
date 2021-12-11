@@ -1,20 +1,32 @@
 <!doctype html>
 <html>
-    <head>
-        <style>
-            body {
-  background-color: lightblue;
-}
-        </style>
-        <title>My Checking Config Values APP</title>
-    </head>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=2">
+    <link rel="stylesheet" href="static/css/uikit.min.css" />
+    <script src="static/js/uikit.min.js"></script>
+    <script src="static/js/uikit-icons.min.js"></script>
+    <style>
+        #maintitle {
+            padding-top: 4%;
+        }
+        .centre {
+            text-align: center;
+            display: block;
+        }
+        body {
+            
+        }
 
-    <body>
-        {% if value %}
-        <p>KA and BR</p>
-        {% else %}
-        <p>No value defined!</p>
-        {% endif %}
-		<img src="/static/graph.jpg" alt="Graph"
-    </body>
+        .bodytitle {
+            text-align: center;
+        }
+    </style>
+    <title>COMPARISON</title>
+</head>
+
+<body>
+    <h1 class="centre uk-text-bolder uk-text-capitalize uk-text-primary" id="maintitle">Comparison</h1>
+    <img src="/static/graph.jpg" alt="Graph" class="uk-align-center" />
+    
+</body>
 </html>
