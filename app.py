@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template
+import time
 
 app = Flask('MyHerokuApp')
 
@@ -20,11 +21,12 @@ port = int(os.environ.get("PORT", 5000))
 @app.route('/')
 def index():
 
-    # We will just display our mailgun secret key, nothing more.
+    # We will just display our mailgun secret key, nothing more
     return render_template("index.html", value=n_fact(10))
 
 # Route that will get the config value based on a provided key, so in
 # this way we can interogate our configuration.
+'''
 @app.route('/<config_key>')
 def key(config_key=None):
     config_value=None
@@ -42,5 +44,5 @@ def key(config_key=None):
 
     # We will just display our mailgun secret key, nothing more.
     return render_template("keys.html", key=config_key, value=config_value)
-
+'''
 app.run(host='0.0.0.0', port=port, debug=True)
