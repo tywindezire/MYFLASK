@@ -1,88 +1,238 @@
-<form method="POST">
-    <p>Last N Days <input type = "text" name = "n-day" /></p>
-    <p>N-Day Moving Average <input type = "text" name = "n-day-ma" /></p>
-	
-	<label for="state1">Choose First State:</label>
-	<select name="state1" id="state1">
-		<option value="code">state_name</option>
-		<option value="AP">Andhra Pradesh</option>
-		<option value="AR">Arunachal Pradesh</option>
-		<option value="AS">Assam</option>
-		<option value="BR">Bihar</option>
-		<option value="CT">Chhattisgarh</option>
-		<option value="GA">Goa</option>
-		<option value="GJ">Gujarat</option>
-		<option value="HR">Haryana</option>
-		<option value="HP">Himachal Pradesh</option>
-		<option value="JK">Jammu and Kashmir</option>
-		<option value="JH">Jharkhand</option>
-		<option value="KA">Karnataka</option>
-		<option value="KL">Kerala</option>
-		<option value="MP">Madhya Pradesh</option>
-		<option value="MH">Maharashtra</option>
-		<option value="MN">Manipur</option>
-		<option value="ML">Meghalaya</option>
-		<option value="MZ">Mizoram</option>
-		<option value="NL">Nagaland</option>
-		<option value="OR">Odisha</option>
-		<option value="PB">Punjab</option>
-		<option value="RJ">Rajasthan</option>
-		<option value="SK">Sikkim</option>
-		<option value="TN">Tamil Nadu</option>
-		<option value="TG">Telangana</option>
-		<option value="TR">Tripura</option>
-		<option value="UT">Uttarakhand</option>
-		<option value="UP">Uttar Pradesh</option>
-		<option value="WB">West Bengal</option>
-		<option value="AN">Andaman and Nicobar Islands</option>
-		<option value="CH">Chandigarh</option>
-		<option value="DN">Dadra and Nagar Haveli</option>
-		<option value="DD">Daman and Diu</option>
-		<option value="DL">Delhi</option>
-		<option value="LD">Lakshadweep</option>
-		<option value="PY">Puducherry</option>
-	</select>
-	
-	<label for="state2">Choose Second State:</label>
-	<select name="state2" id="state2">
-		<option value="code">state_name</option>
-		<option value="AP">Andhra Pradesh</option>
-		<option value="AR">Arunachal Pradesh</option>
-		<option value="AS">Assam</option>
-		<option value="BR">Bihar</option>
-		<option value="CT">Chhattisgarh</option>
-		<option value="GA">Goa</option>
-		<option value="GJ">Gujarat</option>
-		<option value="HR">Haryana</option>
-		<option value="HP">Himachal Pradesh</option>
-		<option value="JK">Jammu and Kashmir</option>
-		<option value="JH">Jharkhand</option>
-		<option value="KA">Karnataka</option>
-		<option value="KL">Kerala</option>
-		<option value="MP">Madhya Pradesh</option>
-		<option value="MH">Maharashtra</option>
-		<option value="MN">Manipur</option>
-		<option value="ML">Meghalaya</option>
-		<option value="MZ">Mizoram</option>
-		<option value="NL">Nagaland</option>
-		<option value="OR">Odisha</option>
-		<option value="PB">Punjab</option>
-		<option value="RJ">Rajasthan</option>
-		<option value="SK">Sikkim</option>
-		<option value="TN">Tamil Nadu</option>
-		<option value="TG">Telangana</option>
-		<option value="TR">Tripura</option>
-		<option value="UT">Uttarakhand</option>
-		<option value="UP">Uttar Pradesh</option>
-		<option value="WB">West Bengal</option>
-		<option value="AN">Andaman and Nicobar Islands</option>
-		<option value="CH">Chandigarh</option>
-		<option value="DN">Dadra and Nagar Haveli</option>
-		<option value="DD">Daman and Diu</option>
-		<option value="DL">Delhi</option>
-		<option value="LD">Lakshadweep</option>
-		<option value="PY">Puducherry</option>
-	</select>
-	
-    <p><input type = "submit" value = "Submit" /></p>
-</form>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="static/css/uikit.min.css" />
+    <script src="static/js/uikit.min.js"></script>
+    <script src="static/js/uikit-icons.min.js"></script>
+    <script src="static/js/jq.js"></script>
+    <style>
+        #maintitle {
+            padding-top: 2%;
+        }
+
+        #maindiv {
+            padding-left: 5%;
+            padding-right: 5%;
+        }
+
+        .main-form {
+            border-style: solid;
+        }
+
+        .centre {
+            text-align: center;
+            display: block;
+        }
+
+        ::-webkit-input-placeholder {
+            text-align: center;
+        }
+
+        :-moz-placeholder { /* Firefox 18- */
+            text-align: center;
+        }
+
+        ::-moz-placeholder { /* Firefox 19+ */
+            text-align: center;
+        }
+
+        :-ms-input-placeholder {
+            text-align: center;
+        }
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            /* Hide default HTML checkbox */
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+    </style>
+    <title>HOMEPAGE </title>
+</head>
+<body>
+    <h1 class="centre uk-text-bolder uk-text-capitalize uk-text-primary" id="maintitle">covid-19 case analysis</h1>
+    <br />  
+    <div class="uk-container-expand  " id="maindiv">
+        <br />
+        <form method="POST" class="uk-align-center	">
+            <p>
+                <div class="uk-text-bolder centre">Last N Days</div>
+                <input type="text" name="n-day" class="uk-input centre " placeholder=" 90  " />
+            </p>
+            <p>
+                <div class="uk-text-bolder centre">N-Day Moving Average</div>
+                <input type="text" name="n-day-ma" class="uk-input centre" placeholder="7 " />
+            </p>
+
+            <p>
+                <label for="state1" class="uk-text-bolder centre state1">Choose First State</label>
+                <select name="state1" class="uk-select state1" id="form-horizontal-select " >
+                    <option value="code" class="centre">State Name</option>
+                    <option value="AP">Andhra Pradesh</option>
+                    <option value="AR">Arunachal Pradesh</option>
+                    <option value="AS">Assam</option>
+                    <option value="BR">Bihar</option>
+                    <option value="CT">Chhattisgarh</option>
+                    <option value="GA">Goa</option>
+                    <option value="GJ">Gujarat</option>
+                    <option value="HR">Haryana</option>
+                    <option value="HP">Himachal Pradesh</option>
+                    <option value="JK">Jammu and Kashmir</option>
+                    <option value="JH">Jharkhand</option>
+                    <option value="KA">Karnataka</option>
+                    <option value="KL">Kerala</option>
+                    <option value="MP">Madhya Pradesh</option>
+                    <option value="MH">Maharashtra</option>
+                    <option value="MN">Manipur</option>
+                    <option value="ML">Meghalaya</option>
+                    <option value="MZ">Mizoram</option>
+                    <option value="NL">Nagaland</option>
+                    <option value="OR">Odisha</option>
+                    <option value="PB">Punjab</option>
+                    <option value="RJ">Rajasthan</option>
+                    <option value="SK">Sikkim</option>
+                    <option value="TN">Tamil Nadu</option>
+                    <option value="TG">Telangana</option>
+                    <option value="TR">Tripura</option>
+                    <option value="UT">Uttarakhand</option>
+                    <option value="UP">Uttar Pradesh</option>
+                    <option value="WB">West Bengal</option>
+                    <option value="AN">Andaman and Nicobar Islands</option>
+                    <option value="CH">Chandigarh</option>
+                    <option value="DN">Dadra and Nagar Haveli</option>
+                    <option value="DD">Daman and Diu</option>
+                    <option value="DL">Delhi</option>
+                    <option value="LD">Lakshadweep</option>
+                    <option value="PY">Puducherry</option>
+                </select>
+            </p>
+
+            <label for="state2" class="uk-text-bolder centre state2">Choose Second State</label>
+            <select name="state2"  class="uk-select state2" id="form-horizontal-select">
+                <option value="code" class="centre">State Name</option>
+                <option value="AP">Andhra Pradesh</option>
+                <option value="AR">Arunachal Pradesh</option>
+                <option value="AS">Assam</option>
+                <option value="BR">Bihar</option>
+                <option value="CT">Chhattisgarh</option>
+                <option value="GA">Goa</option>
+                <option value="GJ">Gujarat</option>
+                <option value="HR">Haryana</option>
+                <option value="HP">Himachal Pradesh</option>
+                <option value="JK">Jammu and Kashmir</option>
+                <option value="JH">Jharkhand</option>
+                <option value="KA">Karnataka</option>
+                <option value="KL">Kerala</option>
+                <option value="MP">Madhya Pradesh</option>
+                <option value="MH">Maharashtra</option>
+                <option value="MN">Manipur</option>
+                <option value="ML">Meghalaya</option>
+                <option value="MZ">Mizoram</option>
+                <option value="NL">Nagaland</option>
+                <option value="OR">Odisha</option>
+                <option value="PB">Punjab</option>
+                <option value="RJ">Rajasthan</option>
+                <option value="SK">Sikkim</option>
+                <option value="TN">Tamil Nadu</option>
+                <option value="TG">Telangana</option>
+                <option value="TR">Tripura</option>
+                <option value="UT">Uttarakhand</option>
+                <option value="UP">Uttar Pradesh</option>
+                <option value="WB">West Bengal</option>
+                <option value="AN">Andaman and Nicobar Islands</option>
+                <option value="CH">Chandigarh</option>
+                <option value="DN">Dadra and Nagar Haveli</option>
+                <option value="DD">Daman and Diu</option>
+                <option value="DL">Delhi</option>
+                <option value="LD">Lakshadweep</option>
+                <option value="PY">Puducherry</option>
+            </select>
+            <label class="switch">
+                <input type="checkbox" name="mycheckbox" id="togBtn">
+                <span class="slider" id="togBtn"></span>
+            </label>
+
+            <p> <input type="submit" value="Submit" class="uk-button uk-button-primary uk-align-center" /></p>
+        </form>
+    </div>
+    <script>
+        $("#togBtn").change(function() {
+        
+         $(".state1").toggle();
+         $(".state2").toggle();
+        if ($(this).is(':checked')) {
+                if($(".state1").is(':visible') ) {
+                    $(".state1").toggle();
+            }
+                if($(".state2").is(':visible')) {
+                    $(".state2").toggle();
+            }
+        }
+        else {
+            if($(".state1").is(':visible') == false) {
+                    $(".state1").toggle();
+            }
+                if($(".state2").is(':visible') == false) {
+                    $(".state2").toggle();
+            }
+        }
+        });
+        
+    </script>
+</body>
+</html>
