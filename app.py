@@ -1,17 +1,16 @@
 import os
 from flask import Flask, render_template
 import time
-
-app = Flask('MyHerokuApp')
-
-# Read the mailgun secret key from environment variables
-mailgun_secret_key_value = os.environ.get('MAILGUN_SECRET_KEY', None)
-
 import urllib.request
 import csv
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
+
+app = Flask('MyHerokuApp')
+
+# Read the mailgun secret key from environment variables
+mailgun_secret_key_value = os.environ.get('MAILGUN_SECRET_KEY', None)
 
 BASE_URL = "https://data.incovid19.org/"
 CASE_TIME_SERIES = BASE_URL+"csv/latest/case_time_series.csv"
@@ -24,9 +23,8 @@ STATE_WISE_DAILY	= BASE_URL+"csv/latest/state_wise_daily.csv"
 STATE_WISE	= BASE_URL+"csv/latest/state_wise.csv"
 DISTRICT_WISE	= BASE_URL+"csv/latest/district_wise.csv"
 
-#f = urllib2.urlopen(STATE_WISE_DAILY)
-#cr = csv.reader(f)
-r = urllib.request.urlretrieve(STATE_WISE_DAILY,'temp.csv')
+LAST_N_DAYS = 60
+N_DAY_AVG = 20
 
 def getCases(state_code):
     with open('temp.csv','r') as csvfile:
@@ -44,17 +42,11 @@ def getCases(state_code):
         
         return cases
 
-#print(date)
-#print(cases)
-
-#we truncate at the very end so as to maintain the originality of data
-#plot y for last n days
 def plot(y,n,ax):
     x = list(range(len(y[-n:])))
     x.reverse()
     x = [i*-1 for i in x]
     ax.plot(x,y[-n:])
-#plot()
 
 def nday_moving_avg(n,mylist):
     ret = []
@@ -74,37 +66,32 @@ def nday_moving_avg(n,mylist):
     ret.append(first_avg)
     return ret
 
-# LAST_N_DAYS = int(input("Last N days of data, N is: "))
-# N_DAY_AVG = int(input("N - Day moving average N is: "))
-
-LAST_N_DAYS = 60
-N_DAY_AVG = 20
 def plotState(state,ax):
     cases = getCases(state)
     n_day = nday_moving_avg(N_DAY_AVG,cases)
     plot(n_day,LAST_N_DAYS,ax)
     ax.set_title(state)
-    
+
+def main_covid():
+    r = urllib.request.urlretrieve(STATE_WISE_DAILY,'temp.csv')
+    fig, ax = plt.subplots(1,2)
+    plotState("KA",ax[0])
+    plotState("BR",ax[1])
 
 
-fig, ax = plt.subplots(1,2)
-plotState("KA",ax[0])
-plotState("BR",ax[1])
-#plt.show()
+    # redraw the canvas
+    fig.canvas.draw()
 
-# redraw the canvas
-fig.canvas.draw()
+    # convert canvas to image
+    img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+    img  = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
 
-# convert canvas to image
-img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
-img  = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+    # img is rgb, convert to opencv's default bgr
+    img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
 
-# img is rgb, convert to opencv's default bgr
-img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
-
-# display image with opencv or any operation you like
-#cv2.imshow("plot",img)
-#cv2.waitKey(0)
+    # display image with opencv or any operation you like
+    #cv2.imshow("plot",img)
+    #cv2.waitKey(0)
 
 def n_fact(n):
     pro = 1
