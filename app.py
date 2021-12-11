@@ -107,7 +107,7 @@ port = int(os.environ.get("PORT", 5000))
 def index():
 
     # We will just display our mailgun secret key, nothing more
-    return render_template("index.html", value=n_fact(11))
+    return render_template("index.html", value=main_covid())
 
 # Route that will get the config value based on a provided key, so in
 # this way we can interogate our configuration.
