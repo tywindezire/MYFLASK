@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import time
 import urllib.request
 import csv
@@ -22,9 +22,6 @@ COWIN_VACCINE_DATA_DISTRICTWISE	= BASE_URL+"csv/latest/cowin_vaccine_data_distri
 STATE_WISE_DAILY	= BASE_URL+"csv/latest/state_wise_daily.csv"
 STATE_WISE	= BASE_URL+"csv/latest/state_wise.csv"
 DISTRICT_WISE	= BASE_URL+"csv/latest/district_wise.csv"
-
-LAST_N_DAYS = 60
-N_DAY_AVG = 20
 
 def n_fact(n):
     pro = 1
@@ -53,6 +50,7 @@ def plot(y,n,ax):
     x.reverse()
     x = [i*-1 for i in x]
     ax.plot(x,y[-n:])
+    return y[-n:]
 
 def nday_moving_avg(n,mylist):
     ret = []
@@ -72,18 +70,18 @@ def nday_moving_avg(n,mylist):
     ret.append(first_avg)
     return ret
 
-def plotState(state,ax):
+def plotState(state,ax,n,nma):
     cases = getCases(state)
-    n_day = nday_moving_avg(N_DAY_AVG,cases)
-    plot(n_day,LAST_N_DAYS,ax)
+    n_day = nday_moving_avg(nma,cases)
+    retval = plot(n_day,n,ax)
     ax.set_title(state)
-    return str(n_day)
+    return str(retval)
 
-def main_covid():
+def main_covid(n,nma):
     r = urllib.request.urlretrieve(STATE_WISE_DAILY,'temp.csv')
     fig, ax = plt.subplots(1,2)
-    KA = plotState("KA",ax[0])
-    BR = plotState("BR",ax[1])
+    KA = plotState("KA",ax[0],n,nma)
+    BR = plotState("BR",ax[1],n,nma)
 
 
     # redraw the canvas
@@ -95,19 +93,28 @@ def main_covid():
 
     # img is rgb, convert to opencv's default bgr
     img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
-    
-    return KA+BR
+    cv2.imwrite(os.getcwd()+"/static/graph.jpg", img)
 
 # This is needed for Heroku configuration, as in Heroku our
 # app will probably not run on port 5000, as Heroku will automatically
 # assign a port for our application
 port = int(os.environ.get("PORT", 5000))
 
-@app.route('/')
+@app.route('/index')
 def index():
 
     # We will just display our mailgun secret key, nothing more
-    return render_template("index.html", value=main_covid())
+    return render_template("index.html", value=main_covid(1,1))
+ 
+@app.route('/')
+def my_form():
+    return render_template('my-form.html')
+
+@app.route('/', methods=['POST'])
+def my_form_post():
+    LAST_N_DAYS = int(request.form['n-day'])
+    N_DAY_AVG = int(request.form['n-day-ma'])
+    return render_template("index.html", value=main_covid(LAST_N_DAYS,N_DAY_AVG))
 
 # Route that will get the config value based on a provided key, so in
 # this way we can interogate our configuration.
