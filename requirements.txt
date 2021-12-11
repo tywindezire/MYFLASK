@@ -55,10 +55,6 @@ PyYAML==6.0
 requests==2.26.0
 six==1.16.0
 SQLAlchemy==1.4.27
-sympy==1.9
-torch==1.10.0+cu113
-torchaudio==0.10.0+cu113
-torchvision==0.11.1+cu113
 typing_extensions==4.0.0
 urllib3==1.26.7
 virtualenv==20.10.0
