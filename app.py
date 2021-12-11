@@ -1,11 +1,11 @@
 import os
 from flask import Flask, render_template
-import time
-import urllib.request
-import csv
-import matplotlib.pyplot as plt
-import cv2
-import numpy as np
+#import time
+#import urllib.request
+#import csv
+#import matplotlib.pyplot as plt
+#import cv2
+#import numpy as np
 
 app = Flask('MyHerokuApp')
 
