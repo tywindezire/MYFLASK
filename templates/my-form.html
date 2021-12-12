@@ -105,28 +105,28 @@
     <title>HOMEPAGE </title>
 </head>
 <body>
-    <h1 class="centre uk-text-bolder uk-text-capitalize uk-text-primary" id="maintitle">covid-19 case analysis</h1>
+    <h1 class="centre uk-heading-large uk-text-primary uk-text-bolder" id="maintitle">Covid-19 Case Analysis</h1>
     <br />  
-    <div class="uk-container-expand" id="maindiv">
+    <div class="uk-container-expand" " id="maindiv">
         <br />
         <form method="POST" class="uk-align-center	">
             <p>
-                <div class="uk-text-bolder centre">Last N Days</div>
-                <input type="text" name="n-day" class="uk-input centre " placeholder=" Enter a number " />
+                <div class="uk-label uk-label-primary centre">Last N Days</div>
+                <input type="number" name="n-day" class="uk-input centre " placeholder=" Enter a number" required>
             </p>
             <p>
-                <div class="uk-text-bolder centre">N-Day Moving Average</div>
-                <input type="text" name="n-day-ma" class="uk-input centre" placeholder="Enter a number" />
+                <div class="uk-label uk-label-primary centre">N-Day Moving Average</div>
+                <input type="number" name="n-day-ma" class="uk-input centre" placeholder="Enter a number" required> 
             </p>
 
             <p>
-                <label for="state1" class="uk-text-bolder centre state1">Choose First State</label>
+                <label for="state1" class="uk-label uk-label-primary centre state1">Choose First State</label>
                 <select name="state1" class="uk-select state1" id="form-horizontal-select ">
                     <option value="code" class="centre">State Name</option>
                     <option value="AP">Andhra Pradesh</option>
                     <option value="AR">Arunachal Pradesh</option>
                     <option value="AS">Assam</option>
-                    <option value="BR">Bihar</option>
+                    <option value="BR" selected>Bihar</option>
                     <option value="CT">Chhattisgarh</option>
                     <option value="GA">Goa</option>
                     <option value="GJ">Gujarat</option>
@@ -162,7 +162,7 @@
                 </select>
             </p>
 
-            <label for="state2" class="uk-text-bolder centre state2">Choose Second State</label>
+            <label for="state2" class="uk-label uk-label-primary centre state2">Choose Second State</label>
             <select name="state2" class="uk-select state2" id="form-horizontal-select">
                 <option value="code" class="centre">State Name</option>
                 <option value="AP">Andhra Pradesh</option>
@@ -176,7 +176,7 @@
                 <option value="HP">Himachal Pradesh</option>
                 <option value="JK">Jammu and Kashmir</option>
                 <option value="JH">Jharkhand</option>
-                <option value="KA">Karnataka</option>
+                <option value="KA" selected>Karnataka</option>
                 <option value="KL">Kerala</option>
                 <option value="MP">Madhya Pradesh</option>
                 <option value="MH">Maharashtra</option>
@@ -202,13 +202,13 @@
                 <option value="LD">Lakshadweep</option>
                 <option value="PY">Puducherry</option>
             </select>
-            <p><div class="uk-text-bolder left">Toggle All States Visibility:</div></p>
+            <p><div class="uk-label uk-label-primary left">Toggle All States Visibility:</div></p>
             <label class="switch">
                 <input type="checkbox" name="mycheckbox" id="togBtn">
                 <span class="slider" id="togBtn"></span>
             </label>
-            <p><div class="uk-text-bolder uk-text-primary left all_states">Graphs: All States</div></p>
-            <p><div class="uk-text-bolder uk-text-success left two_states">Graphs: Two States</div></p>
+            <p><span class="uk-label uk-label-danger left all_states">Graphs: All States</span></p>
+            <p><span class="uk-label uk-label-success left two_states">Graphs: Two States</span></p>
 
             <p> <input type="submit" value="Submit" class="uk-button uk-button-primary uk-align-center" /></p>
         </form>
@@ -219,6 +219,10 @@
         $(".all_states").hide();
         $(".two_states").hide();
         document.getElementById("togBtn").checked = false;
+        if($(".two_states").is(':visible') == false) {
+                            $(".two_states").toggle();
+            }
+
     });
 
         $("#togBtn").change(function() {
