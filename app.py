@@ -45,12 +45,41 @@ def getCases(state_code):
         
         return cases
 
-def plot(y,n,ax):
+def generateCSV(state_name,y,n):
+    str_y = state_name
+    y = y[-n:]
+    for items in y:
+        str_y = str_y + ","+str(items)
+    with open("./static/chart0.csv",'a+') as charts:
+        charts.write(str_y+"\n")
+
+def generateCSVAll(state_name,y,n,index):
+    str_y = state_name
+    y = y[-n:]
+    for items in y:
+        str_y = str_y + ","+str(items)
+    with open("./static/chart"+str(index)+".csv",'a+') as charts:
+        charts.write(str_y+"\n")
+
+def generateCSVHeader(n,y):
     x = list(range(len(y[-n:])))
     x.reverse()
     x = [i*-1 for i in x]
-    ax.plot(x,y[-n:])
-    return y[-n:]
+    str_x = ""
+    for items in x:
+        str_x=str_x +","+str(items)
+    with open("./static/chart0.csv",'w') as charts:
+        charts.write(str_x+"\n")
+
+def generateCSVHeaderAll(n,y,index):
+    x = list(range(len(y[-n:])))
+    x.reverse()
+    x = [i*-1 for i in x]
+    str_x = ""
+    for items in x:
+        str_x=str_x +","+str(items)
+    with open("./static/chart"+str(index)+".csv",'w') as charts:
+        charts.write(str_x+"\n")
 
 def nday_moving_avg(n,mylist):
     ret = []
@@ -70,11 +99,34 @@ def nday_moving_avg(n,mylist):
     ret.append(first_avg)
     return ret
 
-def plotState(state_code,state_name,ax,n,nma):
-    cases = getCases(state_code)
-    n_day = nday_moving_avg(nma,cases)
-    retval = plot(n_day,n,ax)
-    ax.set_title(state_name)
+def plotState2(state_codes,state_names,n,nma):
+    cases = []
+    n_day = []
+    cases.append(getCases(state_codes[0]))
+    cases.append(getCases(state_codes[1]))
+    n_day.append(nday_moving_avg(nma,cases[0]))
+    n_day.append(nday_moving_avg(nma,cases[1]))
+    generateCSVHeader(n,cases[0])
+    generateCSV(state_names[0],n_day[0],n)
+    generateCSV(state_names[1],n_day[1],n)
+    #ax.set_title(state_name)
+
+def plotStateAll(state_codes,state_names,n,nma):
+    cases = []
+    n_day = []
+    NO_OF_STATES = len(state_codes)
+    for index in range(NO_OF_STATES):
+        cases.append(getCases(state_codes[index]))
+
+    for index in range(NO_OF_STATES):    
+        n_day.append(nday_moving_avg(nma,cases[index]))
+    
+
+    for index in range(NO_OF_STATES):
+        generateCSVHeaderAll(n,cases[index],index)
+        generateCSVAll(state_names[index],n_day[index],n,index)
+
+    #ax.set_title(state_name)
 
 def main_covid(state_code_list,n,nma):
     r = urllib.request.urlretrieve(STATE_WISE_DAILY,'temp.csv')
@@ -87,47 +139,16 @@ def main_covid(state_code_list,n,nma):
     all_states = 0
     state_names = []
     state_codes = state_code_list
+    dimension = len(state_code_list)
 
     for codes in state_codes:
         state_names.append(mydict[codes])
 
-    dimension = len(state_names)
-    MAX_COL = 2
-    row_plot = 1
-    if dimension < 3:
-        col_plot = dimension
-        fig, ax = plt.subplots(row_plot,col_plot,figsize=(15,5))
+    if(dimension < 3):
+        plotState2(state_codes,state_names,n,nma)
     else:
-        col_plot = MAX_COL
-        row_plot = int(dimension/MAX_COL)+1
-        fig, ax = plt.subplots(row_plot,col_plot,figsize=(10,50))
-        plt.subplots_adjust(left=0.1,
-                    bottom=0.1, 
-                    right=0.95, 
-                    top=0.99,
-                    wspace=0.1, 
-                    hspace=0.4)
-    
-    #fig, ax = plt.subplots(row_plot,col_plot,figsize=(10,50))
-    
-    for x in range(dimension):
-        plot_coord = 0
-        if(dimension < 3):
-            plotState(state_codes[x],state_names[x],ax[x],n,nma)
-        else:
-            plotState(state_codes[x],state_names[x],ax[int(x/MAX_COL),x%MAX_COL],n,nma)
+        plotStateAll(state_codes,state_names,n,nma)
 
-
-    # redraw the canvas
-    fig.canvas.draw()
-
-    # convert canvas to image
-    img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
-    img  = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-
-    # img is rgb, convert to opencv's default bgr
-    img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
-    cv2.imwrite(os.getcwd()+"/static/graph.jpg", img)
 
 # This is needed for Heroku configuration, as in Heroku our
 # app will probably not run on port 5000, as Heroku will automatically
@@ -162,7 +183,7 @@ def my_form_post():
             #state_code_list = ["AP","AR","AS","BR","CT","GA","GJ","HR","HP","JK","JH","KA","KL","MP","MH","MN","ML","MZ","NL","OR","PB","RJ","SK","TN","TG","TR","UT","UP","WB","AN","CH","DN","DL","LD","PY"]
     else:
             state_code_list = [state1,state2]
-    return render_template("index.html", value=main_covid(state_code_list,LAST_N_DAYS,N_DAY_AVG))
+    return render_template("index.html", value=main_covid(state_code_list,LAST_N_DAYS,N_DAY_AVG),pass_val_switch = all_switch)
 
 
 app.run(host='0.0.0.0', port=port, debug=True)

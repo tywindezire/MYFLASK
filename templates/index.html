@@ -1,32 +1,191 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=2">
-    <link rel="stylesheet" href="static/css/uikit.min.css" />
-    <script src="static/js/uikit.min.js"></script>
-    <script src="static/js/uikit-icons.min.js"></script>
-    <style>
-        #maintitle {
-            padding-top: 4%;
-        }
-        .centre {
-            text-align: center;
-            display: block;
-        }
-        body {
-            
-        }
+	<script src="/static/js/chart.js@2.8.0"></script>
+	<script src="/static/js/chartjs-plugin-datasource@0.1.0"></script>
+	<script src="/static/js/jq.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8hammerjs@2.0.8"></script>
 
-        .bodytitle {
-            text-align: center;
-        }
-    </style>
-    <title>COMPARISON</title>
+	<title></title>
+	<script >var chartColors = {
+	red: 'rgb(255, 99, 132)',
+	blue: 'rgb(54, 162, 235)'
+};
+
+function myConfig(csvfile) {
+	var color = Chart.helpers.color;
+	 var config =  {
+       type: 'bar',
+		data: {
+			datasets: [{
+				type: 'line',
+				backgroundColor: 'transparent',
+				borderColor: chartColors.red,
+				pointBackgroundColor: chartColors.red,
+				tension: 0.7,
+				fill: false
+			}, {
+				type: 'line',
+				backgroundColor: 'transparent',
+				borderColor: chartColors.blue,
+				pointBackgroundColor: chartColors.blue,
+				tension: 0.7,
+				fill: false
+			}]
+		},
+
+
+		plugins: [ChartDataSource],
+		options: {
+			title: {
+				display: true,
+				text: 'CSV data source (dataset) sample'
+			},
+			scales: {
+				xAxes: [{
+					scaleLabel: {
+						display: true,
+						labelString: 'Days'
+					}
+				}],
+				yAxes: [{
+					gridLines: {
+						drawOnChartArea: false
+					},
+					scaleLabel: {
+						display: true,
+						labelString: 'Cases'
+					}
+				}]
+			},
+
+			plugins: {
+				datasource: {
+					type: 'csv',
+					url: csvfile,
+					delimiter: ',',
+					rowMapping: 'dataset',
+					datasetLabels: true,
+					indexLabels: true
+				}
+			},
+			legend: {
+            position: 'top',
+          },
+          scales: {
+            xAxes: [{
+              ticks: {
+                autoSkip: true,
+                maxRotation: 0,
+                minRotation: 0
+              }
+            }]
+          }
+		}
+    };
+  return config;
+}
+
+function myConfigAll(csvfile) {
+	var color = Chart.helpers.color;
+	 var config =  {
+       type: 'bar',
+		data: {
+			datasets: [{
+				type: 'line',
+				backgroundColor: 'transparent',
+				borderColor: chartColors.red,
+				pointBackgroundColor: chartColors.red,
+				tension: 0.7,
+				fill: false
+			}]
+		},
+
+
+		plugins: [ChartDataSource],
+		options: {
+			title: {
+				display: true,
+				text: 'CSV data source (dataset) sample'
+			},
+			scales: {
+				xAxes: [{
+					scaleLabel: {
+						display: true,
+						labelString: 'Days'
+					}
+				}],
+				yAxes: [{
+					gridLines: {
+						drawOnChartArea: false
+					},
+					scaleLabel: {
+						display: true,
+						labelString: 'Cases'
+					}
+				}]
+			},
+
+			plugins: {
+				datasource: {
+					type: 'csv',
+					url: csvfile,
+					delimiter: ',',
+					rowMapping: 'dataset',
+					datasetLabels: true,
+					indexLabels: true
+				}
+			},
+			legend: {
+            position: 'top',
+          },
+          scales: {
+            xAxes: [{
+              ticks: {
+                autoSkip: true,
+                maxRotation: 0,
+                minRotation: 0
+              }
+            }]
+          }
+		}
+    };
+  return config;
+}
+
+function plotGraphs(all_States)	{
+	var MAX_PLOTS = 1
+	if(all_States == 'on')
+	{
+		MAX_PLOTS = 35;
+	}
+	for (let i = 0; i < MAX_PLOTS; i++) {
+	  chartID = 'myChart'+i;
+	  document.write("<canvas id='"+chartID+"'></canvas>");
+	}
+
+	window.onload = function() {
+		for(let i=0; i< MAX_PLOTS; i++) {
+			var csvfile = '/static/chart'+i+'.csv';
+			chartID = 'myChart'+i;
+			var ctx = document.getElementById(chartID).getContext('2d');
+			if(MAX_PLOTS == 1){
+				window.myChart = new Chart(ctx, myConfig(csvfile));
+			}
+			else
+				window.myChart = new Chart(ctx, myConfigAll(csvfile));
+		}
+	};
+}
+
+plotGraphs('{{pass_val_switch}}');
+
+
+</script>
+
+
 </head>
-
-<body>
-    <h1 class="centre uk-text-bolder uk-text-capitalize uk-text-primary" id="maintitle">Comparison</h1>
-    <img src="/static/graph.jpg" alt="Graph" class="uk-align-center" />
-    
+<body id = "main_body" class="main">
 </body>
 </html>
+
